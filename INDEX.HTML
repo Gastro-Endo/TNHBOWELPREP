@@ -1,300 +1,146 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Stepwise Colonoscopy Algorithm - SCOPE Study</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#f4f7fb;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --accent:#004d99; /* header */
-      --green:#2ecc71; --yellow:#f1c40f; --orange:#e67e22; --red:#e74c3c; --black:#111827;
-      --surface-shadow: 0 6px 18px rgba(12,18,31,0.06);
-      --radius:12px;
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
     }
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);margin:0;color:#1f2937}
-
-    /* header */
-    .topbar{display:flex;align-items:center;justify-content:center;gap:16px;padding:18px 22px;background:linear-gradient(90deg,#004d99,#003366);color:#fff;position:relative}
-    .topbar img.logo{position:absolute;left:18px;width:84px;height:auto}
-    .title{font-size:18px;font-weight:700;text-align:center;line-height:1.2}
-    .subtitle{font-size:13px;opacity:0.92;margin-top:6px;font-weight:500}
-
-    main{max-width:980px;margin:22px auto;padding:20px}
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--surface-shadow);padding:18px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media(max-width:880px){.grid{grid-template-columns:1fr}}
-
-    .section{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #e6eef6}
-    .section h3{margin:0 0 10px;font-size:15px;color:var(--accent)}
-    .note{font-size:13px;color:var(--muted);margin-top:8px}
-
-    /* risk chips */
-    .controls{display:flex;flex-wrap:wrap;gap:10px}
-    .chip{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid #e6eef6;background:#fff;cursor:pointer;user-select:none}
-    .chip input{display:none}
-    .chip.selected{box-shadow:0 4px 10px rgba(2,6,23,0.06);border-color:rgba(0,0,0,0.06);background:linear-gradient(180deg,#f7fbff,#ffffff)}
-
-    .controls .chip label{cursor:pointer}
-
-    /* actions */
-    .actions{display:flex;gap:10px;margin-top:12px}
-    button{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:9px;cursor:pointer;font-weight:600}
-    button.secondary{background:#eef2ff;color:var(--accent);border:1px solid rgba(0,77,153,0.06)}
-
-    /* output */
-    .output{margin-top:12px;padding:14px;border-radius:10px;border:1px solid #e6eef6;background:#fff}
-    .out-row{display:flex;align-items:center;gap:14px}
-    .pill{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;font-weight:700}
-    .pill .dot{width:18px;height:18px;border-radius:50%}
-
-    .out-body{margin-top:12px}
-    .out-body p{margin:6px 0}
-    .out-list{background:#fbfdff;padding:10px;border-radius:8px;border:1px dashed #e6eef6}
-
-    footer{max-width:980px;margin:18px auto;text-align:center;color:var(--muted);font-size:13px}
-
-    /* colours for pills */
-    .g{background:linear-gradient(90deg,rgba(46,204,113,0.08),rgba(46,204,113,0.02));color:var(--green);border:1px solid rgba(46,204,113,0.12)}
-    .y{background:linear-gradient(90deg,rgba(241,196,15,0.08),rgba(241,196,15,0.02));color:var(--yellow);border:1px solid rgba(241,196,15,0.12)}
-    .o{background:linear-gradient(90deg,rgba(230,126,34,0.08),rgba(230,126,34,0.02));color:var(--orange);border:1px solid rgba(230,126,34,0.12)}
-    .r{background:linear-gradient(90deg,rgba(231,76,60,0.08),rgba(231,76,60,0.02));color:var(--red);border:1px solid rgba(231,76,60,0.12)}
-    .b{background:linear-gradient(90deg,rgba(17,24,39,0.08),rgba(17,24,39,0.02));color:var(--black);border:1px solid rgba(17,24,39,0.12)}
-
-    .copyarea{width:100%;padding:10px;border-radius:8px;border:1px solid #eef2f6;background:#fafbfd;margin-top:10px;font-family:monospace;font-size:13px}
-
+    header {
+      background: #004d99;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      line-height: 1.4;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 1.5rem;
+      color: #004d99;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+    select, input {
+      margin-top: 0.5rem;
+      padding: 0.6rem;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #004d99;
+      color: white;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #003366;
+    }
+    .result {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+    .green { background: #dff0d8; border: 2px solid #3c763d; color: #3c763d; }
+    .yellow { background: #fcf8e3; border: 2px solid #8a6d3b; color: #8a6d3b; }
+    .orange { background: #ffe5b4; border: 2px solid #d35400; color: #d35400; }
+    .red { background: #f2dede; border: 2px solid #a94442; color: #a94442; }
+    .black { background: #333; border: 2px solid #000; color: white; }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <!-- Northern Health logo top-left -->
-    <img class="logo" src="https://www.nh.org.au/wp-content/uploads/2019/08/northern-health-logo.png" alt="Northern Health logo"/>
-    <div style="text-align:center">
-      <div class="title">Stepwise Colonoscopy Algorithm to Optimise Bowel Preparation in Endoscopy</div>
-      <div class="subtitle">SCOPE Study</div>
-    </div>
-  </div>
+  <header>
+    <h1>
+      Stepwise Colonoscopy Algorithm to Optimise Bowel Preparation in Endoscopy  
+      <br/>SCOPE Study
+    </h1>
+  </header>
 
   <main>
-    <div class="card">
-      <div class="grid">
-        <div class="section">
-          <h3>Major Risk Factors</h3>
-          <div class="controls" id="majors">
-            <div class="chip" data-value="chronic_liver"><input type="checkbox"><label>Chronic liver disease</label></div>
-            <div class="chip" data-value="chronic_kidney"><input type="checkbox"><label>Chronic kidney disease</label></div>
-            <div class="chip" data-value="tca"><input type="checkbox"><label>Tricyclic antidepressants</label></div>
-            <div class="chip" data-value="opiates"><input type="checkbox"><label>Opiate use</label></div>
-            <div class="chip" data-value="prior_poor_prep"><input type="checkbox"><label>Prior poor preparation</label></div>
-          </div>
-        </div>
+    <h2>Patient Assessment</h2>
+    <label for="motions">Number of bowel motions in the last 24 hours</label>
+    <select id="motions">
+      <option value="0">0</option>
+      <option value="1-2">1–2</option>
+      <option value="3-4">3–4</option>
+      <option value="5plus">5 or more</option>
+    </select>
 
-        <div class="section">
-          <h3>Minor Risk Factors</h3>
-          <div class="controls" id="minors">
-            <div class="chip" data-value="prior_abdo_surg"><input type="checkbox"><label>Prior abdominal surgery</label></div>
-            <div class="chip" data-value="constipation"><input type="checkbox"><label>Constipation (fewer than three bowel motions per week or requiring regular laxative)</label></div>
-            <div class="chip" data-value="t2dm"><input type="checkbox"><label>Type 2 diabetes mellitus</label></div>
-            <div class="chip" data-value="anticholinergics"><input type="checkbox"><label>Anticholinergic medication use</label></div>
-            <div class="chip" data-value="glp1"><input type="checkbox"><label>Glucagon-like peptide 1 receptor agonist</label></div>
-          </div>
-        </div>
+    <label for="consistency">Stool consistency</label>
+    <select id="consistency">
+      <option value="formed">Formed</option>
+      <option value="semi">Semi-formed</option>
+      <option value="liquid">Liquid</option>
+    </select>
 
-        <div class="section">
-          <h3>Specific Scenarios</h3>
-          <div class="controls">
-            <div class="chip" data-value="failed_4l"><input type="checkbox"><label>Previously failed 4L Moviprep or 4 sachet Picoprep</label></div>
-            <div class="chip" data-value="moviprep_intol"><input type="checkbox"><label>Previously unable to complete Moviprep due to nausea, vomiting or allergy (do not use Moviprep in eGFR &lt;30 or EF &lt;40% / NYHA class 3–4)</label></div>
-          </div>
-          <div class="note">Note: constipation defined as fewer than three bowel motions per week and/or requiring regular laxative.</div>
-        </div>
+    <label for="clarity">Stool clarity after preparation</label>
+    <select id="clarity">
+      <option value="clear">Clear</option>
+      <option value="yellow">Yellow</option>
+      <option value="brown">Brown</option>
+    </select>
 
-        <div class="section">
-          <h3>Output and Recommendation</h3>
-          <div class="actions">
-            <button id="calc">Calculate Recommendation</button>
-            <button class="secondary" id="reset">Reset Selections</button>
-            <button class="secondary" id="copy">Copy summary to clipboard</button>
-          </div>
+    <button onclick="calculateSeverity()">Assess Preparation Quality</button>
 
-          <div id="output" class="output" style="display:none">
-            <div class="out-row">
-              <div id="pill" class="pill"><span class="dot" id="pill-dot"></span><span id="pill-text"></span></div>
-            </div>
-            <div class="out-body">
-              <p><strong>Major risk factors present:</strong></p>
-              <div id="out-majors" class="out-list">None</div>
-
-              <p style="margin-top:8px"><strong>Minor risk factors present:</strong></p>
-              <div id="out-minors" class="out-list">None</div>
-
-              <p style="margin-top:8px"><strong>Special scenarios:</strong></p>
-              <div id="out-spec" class="out-list">None</div>
-
-              <p style="margin-top:12px"><strong>Recommended regimen:</strong></p>
-              <div id="out-regimen" class="out-list">-</div>
-
-              <textarea id="copyArea" class="copyarea" rows="5" readonly></textarea>
-            </div>
-          </div>
-
-          <div class="note" style="margin-top:10px">This tool is provided for administrative triage and documentation. Use clinical judgement for individual patients and adhere to local safety guidelines.</div>
-        </div>
-      </div>
-    </div>
+    <div id="result" class="result"></div>
   </main>
 
-  <footer>
-    Northern Health — SCOPE Study · For internal clinical use
-  </footer>
+  <script>
+    function calculateSeverity() {
+      const motions = document.getElementById("motions").value;
+      const consistency = document.getElementById("consistency").value;
+      const clarity = document.getElementById("clarity").value;
+      const resultBox = document.getElementById("result");
 
-<script>
-  // Helpers
-  const qs = sel => Array.from(document.querySelectorAll(sel))
-  const getSelected = (container) => {
-    return qs(`#${container} .chip.selected`).map(c=>c.getAttribute('data-value'))
-  }
+      let severity = "green";
+      let message = "Good preparation – proceed with colonoscopy.";
 
-  // Toggle selection on chip click
-  qs('.chip').forEach(chip=>{
-    chip.addEventListener('click', ()=>{
-      const cb = chip.querySelector('input')
-      cb.checked = !cb.checked
-      chip.classList.toggle('selected', cb.checked)
-    })
-  })
-
-  // Calculation logic
-  function calculate(){
-    const majors = getSelected('majors')
-    const minors = getSelected('minors')
-    const specs = getSelected('') // none
-    // specific scenario chips have data-values 'failed_4l' and 'moviprep_intol'
-    const failed = qs('[data-value="failed_4l"]')[0].classList.contains('selected')
-    const moviIntol = qs('[data-value="moviprep_intol"]')[0].classList.contains('selected')
-
-    // Prioritise black
-    let group = null
-    let regimen = ''
-
-    if(failed){
-      group = 'black'
-      regimen = '2 litres Moviprep two days prior then 4 litres Moviprep on the day of preparation, plus Bisacodyl 10 mg for two days prior. (If previously tolerated 4 sachet Picoprep and failed, use 2 sachet Picoprep two days prior + 4 sachet Picoprep + Bisacodyl 10 mg x2 days)'
-    } else if(moviIntol){
-      // Picoprep pathways
-      if(majors.length===0 && minors.length===0){
-        group='green'; regimen = 'Standard three sachet Picoprep orange';
-      } else if(majors.length===0 && minors.length===1){
-        group='yellow'; regimen = 'Four sachet Picoprep orange + Bisacodyl 10 mg for two days';
-      } else if(majors.length===1 || minors.length===2){
-        group='orange'; regimen = 'Four sachet Picoprep orange';
-      } else if((majors.length>=1 && minors.length>=1) || minors.length>=3){
-        group='red'; regimen = 'Four sachet Picoprep orange + Bisacodyl 10 mg for two days prior';
-      } else {
-        group='orange'; regimen='Four sachet Picoprep orange';
+      if (motions === "0" || consistency === "formed" || clarity === "brown") {
+        severity = "red";
+        message = "Poor preparation – consider re-preparation.";
+      } else if (consistency === "semi" || clarity === "yellow") {
+        severity = "yellow";
+        message = "Borderline preparation – may require additional bowel preparation steps.";
+      } else if (motions === "1-2") {
+        severity = "orange";
+        message = "Suboptimal preparation – evaluate the need for additional intervention.";
+      } else if (clarity === "clear" && consistency === "liquid") {
+        severity = "green";
+        message = "Optimal preparation – proceed with colonoscopy.";
       }
-    } else {
-      // Moviprep pathways
-      if(majors.length===0 && minors.length===0){
-        group='green'; regimen = 'Standard two litre Moviprep preparation';
-      } else if(majors.length===0 && minors.length===1){
-        group='yellow'; regimen = 'Two litre Moviprep preparation + Bisacodyl 10 mg for two days';
-      } else if(majors.length===1 || minors.length===2){
-        group='orange'; regimen = 'Four litre Moviprep preparation';
-      } else if((majors.length>=1 && minors.length>=1) || minors.length>=3){
-        group='red'; regimen = 'Four litre Moviprep preparation + Bisacodyl 10 mg for two days prior';
-      } else {
-        group='orange'; regimen='Four litre Moviprep preparation';
-      }
+
+      resultBox.className = "result " + severity;
+      resultBox.innerHTML = `<strong>Result:</strong> ${message}`;
     }
-
-    // Build output text and copy area
-    const outMaj = majors.length ? majors.map(h=>humanize(h)).join('
-') : 'None'
-    const outMin = minors.length ? minors.map(h=>humanize(h)).join('
-') : 'None'
-    const outSpec = []
-    if(failed) outSpec.push('Previously failed 4L Moviprep or 4 sachet Picoprep')
-    if(moviIntol) outSpec.push('Previously unable to complete Moviprep due to nausea, vomiting or allergy (avoid Moviprep in eGFR <30 or EF <40% or NYHA class 3–4)')
-    const outSpecText = outSpec.length? outSpec.join('
-') : 'None'
-
-    // Show section
-    const out = document.getElementById('output')
-    out.style.display = 'block'
-    const pill = document.getElementById('pill')
-    const pillDot = document.getElementById('pill-dot')
-    const pillText = document.getElementById('pill-text')
-    pill.className = `pill ${group==='green'?'g':group==='yellow'?'y':group==='orange'?'o':group==='red'?'r':'b'}`
-    pillDot.style.background = group==='green'? getComputedStyle(document.documentElement).getPropertyValue('--green') :
-                             group==='yellow'? getComputedStyle(document.documentElement).getPropertyValue('--yellow') :
-                             group==='orange'? getComputedStyle(document.documentElement).getPropertyValue('--orange') :
-                             group==='red'? getComputedStyle(document.documentElement).getPropertyValue('--red') : getComputedStyle(document.documentElement).getPropertyValue('--black')
-    pillText.textContent = `${group.toUpperCase()} group`
-
-    document.getElementById('out-majors').textContent = outMaj
-    document.getElementById('out-minors').textContent = outMin
-    document.getElementById('out-spec').textContent = outSpecText
-    document.getElementById('out-regimen').textContent = regimen
-
-    const copyTxt = `Risk group: ${group.toUpperCase()}
-
-Major risk factors:
-${outMaj}
-
-Minor risk factors:
-${outMin}
-
-Special scenarios:
-${outSpecText}
-
-Recommended regimen:
-${regimen}`
-    document.getElementById('copyArea').value = copyTxt
-  }
-
-  function humanize(key){
-    const map = {
-      chronic_liver: 'Chronic liver disease',
-      chronic_kidney: 'Chronic kidney disease',
-      tca: 'Tricyclic antidepressants',
-      opiates: 'Opiate use',
-      prior_poor_prep: 'Prior poor preparation',
-      prior_abdo_surg: 'Prior abdominal surgery',
-      constipation: 'Constipation (fewer than three bowel motions per week or requiring regular laxative)',
-      t2dm: 'Type 2 diabetes mellitus',
-      anticholinergics: 'Anticholinergic medication use',
-      glp1: 'Glucagon-like peptide 1 receptor agonist'
-    }
-    return map[key]||key
-  }
-
-  // Buttons
-  document.getElementById('calc').addEventListener('click', calculate)
-  document.getElementById('reset').addEventListener('click', ()=>{
-    qs('.chip').forEach(c=>{ c.classList.remove('selected'); c.querySelector('input').checked=false })
-    document.getElementById('output').style.display='none'
-  })
-  document.getElementById('copy').addEventListener('click', ()=>{
-    const area = document.getElementById('copyArea')
-    area.select(); area.setSelectionRange(0,99999)
-    navigator.clipboard.writeText(area.value).then(()=>{ alert('Summary copied to clipboard') })
-  })
-
-  // Allow preloading via query params (majors, minors, failed_4l=1, moviprep_intol=1)
-  function loadFromParams(){
-    const params = new URLSearchParams(location.search)
-    if(params.has('majors')) params.get('majors').split(',').forEach(v=>{ const el = qs(`[data-value="${v}"]`)[0]; if(el){ el.classList.add('selected'); el.querySelector('input').checked=true} })
-    if(params.has('minors')) params.get('minors').split(',').forEach(v=>{ const el = qs(`[data-value="${v}"]`)[0]; if(el){ el.classList.add('selected'); el.querySelector('input').checked=true} })
-    if(params.get('failed_4l')==='1'){ const el = qs('[data-value="failed_4l"]')[0]; el.classList.add('selected'); el.querySelector('input').checked=true }
-    if(params.get('moviprep_intol')==='1'){ const el = qs('[data-value="moviprep_intol"]')[0]; el.classList.add('selected'); el.querySelector('input').checked=true }
-    if(location.search) calculate()
-  }
-  loadFromParams()
-</script>
+  </script>
 </body>
 </html>

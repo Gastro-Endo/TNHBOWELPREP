@@ -1,172 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SCOPE Study - Bowel Prep Algorithm</title>
-  <script src="script.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SCOPE: Stepwise Colonoscopy Algorithm to Optimization Preparation in Endoscopy</title>
   <style>
+    :root{
+      --bg:#f5f8fc;
+      --card:#ffffff;
+      --muted:#6b7a90;
+      --line:#d9e2ec;
+      --brand:#245ea8;
+      --brand-2:#487ec7;
+      --shadow: 0 2px 10px rgba(16,24,40,0.06);
+    }
+    html, body { background: var(--bg); color:#222; }
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f9f9f9;
-      color: #333;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 24px;
+      max-width: 1000px;
+      margin: 0 auto 40px;
     }
-    h1 {
+
+    /* Header */
+    .header {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .header img {
+      height: 56px;
+      width: auto;
+      display:block;
+    }
+    .header .title {
+      font-size: 1.15rem;
+      line-height: 1.4;
       text-align: center;
-      color: #003366;
-      margin-bottom: 20px;
+      color:#0f2744;
+      font-weight: 600;
     }
-    h2 {
-      color: #004080;
-      margin-top: 20px;
+    .header .scope i {
+      font-style: normal;
+      font-weight: 800;
+      color: var(--brand);
     }
-    .section {
-      margin-bottom: 20px;
-      padding: 15px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    /* Section cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      color:#132a4a;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    /* Inputs - Updated to single column */
+    .group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     label {
-      display: block;
-      margin: 5px 0;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 6px 0;
+      color:#1f2d3d;
+    }
+    label small {
+      display:block;
+      font-style: normal;
+      color: var(--muted);
+      margin-left: 26px;
+      margin-top: 2px;
+      line-height: 1.25;
+      font-size: 0.85rem;
+    }
+
+    /* Buttons */
+    .actions {
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items:center;
     }
     button {
-      background-color: #004080;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-    button:hover {
-      background-color: #0066cc;
-    }
-    #result {
-      margin-top: 20px;
-      padding: 20px;
-      background: #eef6ff;
-      border-left: 6px solid #004080;
+      padding: 10px 16px;
+      font-size: 0.95rem;
       border-radius: 8px;
-      white-space: pre-line;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .15s ease;
     }
-    .color-icon {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      margin-right: 8px;
-      vertical-align: middle;
+    .primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
     }
-    .green { background-color: green; }
-    .yellow { background-color: gold; }
-    .orange { background-color: orange; }
-    .red { background-color: red; }
-    .black { background-color: black; }
+    .primary:hover { background: var(--brand-2); border-color: var(--brand-2); }
+    .ghost {
+      background: #f1f5fb;
+      color:#0f2744;
+      border-color:#e1e9f4;
+    }
+    .ghost:hover { background:#e6eef7; }
+
+    /* Result bar */
+    .result {
+      margin-top: 14px;
+      padding: 14px 16px;
+      font-weight: 700;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .green { background: #d4edda; color: #155724; }
+    .yellow { background: #fff176; color: #7a5e00; }
+    .orange { background: #ffcc80; color: #a04600; }
+    .red { background: #f8d7da; color: #721c24; }
+    .black { background: #2d2d2d; color: #fff; }
+
+    /* Summary box and copy */
+    #summaryBox {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border: 1px dashed #c8d6e8;
+      border-radius: 8px;
+      background: #ffffff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.95rem;
+      color:#0f2744;
+      box-shadow: var(--shadow);
+    }
+
+    /* Tables */
+    h4.section-title {
+      margin: 16px 0 6px;
+      color:#0f2744;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 24px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #e9f0f9; color:#0f2744; font-weight:700; }
+    tr:last-child td { border-bottom: none; }
+    .criteria-line {
+      display: block;
+      margin-top: 4px;
+    }
+
+    .disclaimer {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 4px 0 10px;
+      padding-left: 4px;
+    }
+
+    /* Subtle colored dividers for professionalism */
+    .divider {
+      height: 6px;
+      background: linear-gradient(90deg,#e5eefb, #f5f8fc);
+      border-radius: 6px;
+      margin: 16px 0;
+    }
   </style>
 </head>
 <body>
-  <h1>Stepwise Colonoscopy Algorithm to Optimise Bowel Preparation in Endoscopy - SCOPE Study</h1>
 
-  <div class="section">
-    <h2>Major Risk Factors</h2>
-    <label><input type="checkbox" value="Chronic liver disease"> Chronic liver disease</label>
-    <label><input type="checkbox" value="Chronic kidney disease"> Chronic kidney disease</label>
-    <label><input type="checkbox" value="Tricyclic antidepressants"> Tricyclic antidepressants</label>
-    <label><input type="checkbox" value="Opiate use"> Opiate use</label>
-    <label><input type="checkbox" value="Prior poor preparation"> Prior poor preparation</label>
+  <!-- Header with Northern Health logo + title -->
+  <div class="header">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABXUExURUxpcQCZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0ACZ0AC极简版Northern Health文字logo" alt="Northern Health logo">
+    <div class="title">
+      SCOPE: <span class="scope">
+        <i>S</i>tepwise <i>C</i>olonoscopy Algorithm to <i>O</i>ptimization <i>P</i>reparation in <i>E</i>ndoscopy
+      </span>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>Minor Risk Factors</h2>
-    <label><input type="checkbox" value="Prior abdominal surgery"> Prior abdominal surgery</label>
-    <label><input type="checkbox" value="Constipation (&lt;3 bowel motions per week or requiring regular laxatives)"> Constipation (fewer than 3 bowel motions per week and/or requiring regular laxatives)</label>
-    <label><input type="checkbox" value="Type 2 diabetes mellitus"> Type 2 diabetes mellitus</label>
-    <label><input type="checkbox" value="Anticholinergics"> Anticholinergics</label>
-    <label><input type="checkbox" value="Glucagon-like-peptide 1"> Glucagon-like-peptide 1</label>
+  <!-- Input segments -->
+  <form id="riskForm">
+    <div class="card">
+      <h3>Major Risk Factors</h3>
+      <div class="group">
+        <label><input type="checkbox" class="major" value="CLD"> Chronic liver disease</label>
+
+        <label>
+          <input type="checkbox" class="major" value="CKD">
+          Chronic kidney disease
+          <small>(eGFR &lt;60 for &gt;3 months)</small>
+        </label>
+
+        <label>
+          <input type="checkbox" class="major" value="TCA">
+          Tricyclic antidepressants
+          <small>(e.g. amitriptyline, nortriptyline, clomipramine, desipramine, imipramine, doxepin, dosulepin)</small>
+        </label>
+
+        <label><input type="checkbox" class="major" value="Opiates"> Opiate use</label>
+
+        <label><input type="checkbox" class="major" value="prior poor prep"> Prior poor preparation</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Minor Risk Factors</h3>
+      <div class="group">
+        <label><input type="checkbox" class="minor" value="Surgery"> Prior abdominal surgery</label>
+        <label><input type="checkbox" class="minor" value="Constipation"> Constipation</label>
+        <label><input type="checkbox" class="minor" value="T2DM"> T2DM</label>
+
+        <label>
+          <input type="checkbox" class="minor" value="Anticholinergics">
+          Anticholinergics
+          <small>(e.g. oxybutynin, hyoscine, benztropine, quetiapine, doxepin, imipramine, chlorpromazine, clozapine, promethazine, diphenhydramine)</small>
+        </label>
+
+        <label>
+          <input type="checkbox" class="minor" value="GLP-1">
+          GLP-1 agonist
+          <small>(e.g. semaglutide, exenatide, dulaglutide, liraglutide, tirzepatide, lixisenatide)</small>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Specific Scenarios</h3>
+      <div class="group">
+        <label><input type="checkbox" id="fail4L"> Previously failed 4L Moviprep bowel preparation</label>
+        <label><input type="checkbox" id="intolerantMoviprep"> Previously intolerant/unable to complete Moviprep</label>
+        <label><input type="checkbox" id="fail4Pico"> Previously failed 4 sachet Picoprep bowel preparation</label>
+      </div>
+      <div class="divider"></div>
+      <div class="actions">
+        <button type="button" class="primary" onclick="calculate()">Determine Bowel Preparation</button>
+        <button type="button" class="ghost" onclick="clearAll()">Clear All</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Results -->
+  <div id="result" class="result"></div>
+  <div id="summaryBox"></div>
+  <div class="actions" style="margin-top:8px;">
+    <button type="button" class="ghost" onclick="copySummary()">Copy Summary</button>
   </div>
 
-  <div class="section">
-    <h2>Specific Scenarios</h2>
-    <label><input type="checkbox" value="Previously failed 4L bowel preparation" id="fail4L"> Previously failed 4L bowel preparation</label>
-    <label><input type="checkbox" value="Unable to complete Moviprep due to nausea, vomiting, or allergy" id="moviprepIssue"> Unable to complete Moviprep due to nausea, vomiting, or allergy</label>
-  </div>
+  <!-- Tables -->
+  <h4 class="section-title">Moviprep Risk Categories</h4>
+  <table>
+    <tr><th>Category</th><th>Criteria</th><th>Regimen</th></tr>
+    <tr class="green"><td>🟢 Moviprep Green Regimen</td><td>No risk factors</td><td>Standard 2L Moviprep</td></tr>
+    <tr class="yellow"><td>🟡 Moviprep Yellow Regimen</td><td>1 Minor Risk Factor</td><td>2L Moviprep + Bisacodyl 10mg for 2 days</td></tr>
+    <tr class="orange"><td>🟠 Moviprep Orange Regimen</td>
+        <td>1 Major Risk Factor<span class="criteria-line">OR</span>2 Minor Risk Factors</td>
+        <td>4L Moviprep</td></tr>
+    <tr class="red"><td>🔴 Moviprep Red Regimen</td>
+        <td>1 Major + any additional factor<span class="criteria-line">OR ≥3 Minor Risk Factors</span></td>
+        <td>4L Moviprep + Bisacodyl 10mg for 2 days prior</td></tr>
+    <tr class="black"><td>⚫ Moviprep Black Regimen</td><td>Previously failed 4L Moviprep</td><td>2L Moviprep two days prior + 4L Moviprep preparation + Bisacodyl 10mg for 2 days</td></tr>
+  </table>
 
-  <button onclick="calculate()">Get Recommendation</button>
-
-  <div id="result"></div>
-  <button id="copyBtn" style="display:none;" onclick="copySummary()">Copy Summary</button>
+  <h4 class="section-title">Picoprep Risk Categories</h4>
+  <div class="disclaimer">*Not to be used in patients with renal failure (eGFR &lt;30) or heart failure with reduced ejection fraction (EF &lt;40% or NYHA class 3–4)</div>
+  <table>
+    <tr><th>Category</th><th>Criteria</th><th>Regimen</th></tr>
+    <tr class="green"><td>🟢 Picoprep Green Regimen</td><td>No risk factors</td><td>Standard 3 sachet Picoprep preparation</td></tr>
+    <tr class="yellow"><td>🟡 Picoprep Yellow Regimen</td><td>1 Minor Risk Factor</td><td>3 sachet Picoprep preparation + Bisacodyl 10mg for 2 days</td></tr>
+    <tr class="orange"><td>🟠 Picoprep Orange Regimen</td>
+        <td>1 Major Risk Factor<span class="criteria-line">OR</span>2 Minor Risk Factors</td>
+        <td>4 sachet Picoprep preparation</td></tr>
+    <tr class="red"><td>🔴 Picoprep Red Regimen</td>
+        <td>1 Major + any additional factor<span class="criteria-line">OR ≥3 Minor Risk Factors</span></td>
+        <td>4 sachet Picoprep preparation + Bisacodyl 10mg for 2 days</td></tr>
+    <tr class="black"><td>⚫ Picoprep Black Regimen</td><td>Previously failed 4 sachet Picoprep</td><td>2 sachet Picoprep 2 days prior + 4 sachet Picoprep + Bisacodyl 10mg for 2 days</td></tr>
+  </table>
 
   <script>
     function calculate() {
-      const major = document.querySelectorAll('.section:nth-of-type(1) input:checked');
-      const minor = document.querySelectorAll('.section:nth-of-type(2) input:checked');
-      const fail4L = document.getElementById('fail4L').checked;
-      const moviprepIssue = document.getElementById('moviprepIssue').checked;
+      const majors = document.querySelectorAll('.major:checked');
+      const minors = document.querySelectorAll('.minor:checked');
+      const major = majors.length;
+      const minor = minors.length;
+      const failed4L = document.getElementById('fail4L').checked;
+      const intolerantMoviprep = document.getElementById('intolerantMoviprep').checked;
+      const failed4Pico = document.getElementById('fail4Pico').checked;
 
-      let summary = "Selected Risk Factors:\n";
-      major.forEach(cb => summary += "- " + cb.value + "\n");
-      minor.forEach(cb => summary += "- " + cb.value + "\n");
-      if (fail4L) summary += "- Previously failed 4L bowel preparation\n";
-      if (moviprepIssue) summary += "- Unable to complete Moviprep\n";
+      const resultDiv = document.getElementById('result');
+      let text = "";
+      let style = "";
+      let summary = "";
 
-      let category = "";
-      let regimen = "";
+      let riskFactors = [];
+      majors.forEach(cb => riskFactors.push(cb.value));
+      minors.forEach(cb => riskFactors.push(cb.value));
 
-      // Moviprep issue branch
-      if (moviprepIssue) {
-        if (fail4L) {
-          category = "Black";
-          regimen = "2 sachets the day before + 4 sachets preparation + Bisacodyl 10mg for 2 days";
-        } else if (major.length === 0 && minor.length === 0) {
-          category = "Green";
-          regimen = "Standard 3 sachet preparation";
-        } else if (minor.length === 1 && major.length === 0) {
-          category = "Yellow";
-          regimen = "4 sachet preparation + Bisacodyl 10mg for 2 days";
-        } else if (major.length === 1 || minor.length === 2) {
-          category = "Orange";
-          regimen = "4 sachet preparation";
+      let notes = [];
+      if (failed4L) notes.push("Previous failed 4L Moviprep");
+      if (intolerantMoviprep) notes.push("Previous intolerant to Moviprep");
+      if (failed4Pico) notes.push("Previous failed 4 sachet Picoprep");
+
+      // MOVIPREP PATHWAY
+      if (failed4L) {
+        text = "⚫ Moviprep Black Regimen: 2L Moviprep two days prior + 4L Moviprep preparation + Bisacodyl 10mg for 2 days";
+        style = "black";
+        summary = `Moviprep Black Regimen | ${riskFactors.join(", ") || "No RF"} | ${notes.join(", ")}`;
+      } else if (!intolerantMoviprep) {
+        if ((major >= 1 && (major + minor) > 1) || minor >= 3) {
+          text = "🔴 Moviprep Red Regimen: 4L Moviprep + Bisacodyl 10mg for 2 days prior";
+          style = "red";
+          summary = `Moviprep Red Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
+        } else if (major >= 1 || minor >= 2) {
+          text = "🟠 Moviprep Orange Regimen: 4L Moviprep";
+          style = "orange";
+          summary = `Moviprep Orange Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
+        } else if (minor === 1) {
+          text = "🟡 Moviprep Yellow Regimen: 2L Moviprep + Bisacodyl 10mg for 2 days";
+          style = "yellow";
+          summary = `Moviprep Yellow Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
         } else {
-          category = "Red";
-          regimen = "4 sachet preparation + Bisacodyl 10mg for 2 days";
-        }
-      } 
-      // Standard branch
-      else {
-        if (fail4L) {
-          category = "Black";
-          regimen = "2L the day before + 4L preparation + Bisacodyl 10mg for 2 days";
-        } else if (major.length === 0 && minor.length === 0) {
-          category = "Green";
-          regimen = "Standard 3L sachet preparation";
-        } else if (minor.length === 1 && major.length === 0) {
-          category = "Yellow";
-          regimen = "4 sachet preparation + Bisacodyl 10mg for 2 days";
-        } else if (major.length === 1 || minor.length === 2) {
-          category = "Orange";
-          regimen = "4L preparation";
-        } else {
-          category = "Red";
-          regimen = "4L preparation + Bisacodyl 10mg for 2 days";
+          text = "🟢 Moviprep Green Regimen: Standard 2L Moviprep";
+          style = "green";
+          summary = "Moviprep Green Regimen | No RF";
         }
       }
 
-      let colorClass = category.toLowerCase();
-      let icon = `<span class="color-icon ${colorClass}"></span>`;
+      // PICOPREP PATHWAY
+      if (intolerantMoviprep || failed4Pico) {
+        if (failed4Pico) {
+          text = "⚫ Picoprep Black Regimen: 2 sachet Picoprep 2 days prior + 4 sachet Picoprep + Bisacodyl 10mg for 2 days";
+          style = "black";
+          summary = `Picoprep Black Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
+        } else if ((major >= 1 && (major + minor) > 1) || minor >= 3) {
+          text = "🔴 Picoprep Red Regimen: 4 sachet Picoprep + Bisacodyl 10mg for 2 days";
+          style = "red";
+          summary = `Picoprep Red Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
+        } else if (major >= 1 || minor >= 2) {
+          text = "🟠 Picoprep Orange Regimen: 4 sachet Picoprep";
+          style = "orange";
+          summary = `Picoprep Orange Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
+        } else if (minor === 1) {
+          text = "🟡 Picoprep Yellow Regimen: 3 sachet Picoprep + Bisacodyl 10mg for 2 days";
+          style = "yellow";
+          summary = `Picoprep Yellow Regimen | ${riskFactors.join(", ")} | ${notes.join(", ")}`;
+        } else {
+          text = "🟢 Picoprep Green Regimen: Standard 3 sachet Picoprep";
+          style = "green";
+          summary = "Picoprep Green Regimen | No RF";
+        }
+      }
 
-      let finalSummary = `${summary}\nRisk Category: ${icon}${category}\nRecommended Regimen: ${regimen}`;
-      document.getElementById("result").innerHTML = finalSummary.replace(/\n/g, "<br>");
-      document.getElementById("copyBtn").style.display = "inline-block";
+      resultDiv.innerHTML = text;
+      resultDiv.className = "result " + style;
+      document.getElementById('summaryBox').innerText = summary;
     }
 
     function copySummary() {
-      const text = document.getElementById("result").innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Summary copied to clipboard!");
-      });
+      const summaryText = document.getElementById('summaryBox').innerText;
+      if (!summaryText.trim()) return;
+      navigator.clipboard.writeText(summaryText);
+    }
+
+    function clearAll() {
+      document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+      document.getElementById('result').innerHTML = "";
+      document.getElementById('summaryBox').innerText = "";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
 </body>
